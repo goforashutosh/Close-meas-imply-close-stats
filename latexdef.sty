@@ -1,0 +1,55 @@
+%\ProvidesPackage{latexdef}
+
+
+% for proper numbering:
+% https://tex.stackexchange.com/questions/45817/theorem-definition-lemma-problem-numbering
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{claim}[theorem]{Claim}
+
+% Number an eqn in align* easily
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+% Extra theorem and corollary representations
+\newtheorem* {thmIntro}{Theorem}
+\newenvironment{corPrime}[1]			% for corollary prime
+  {\renewcommand{\thecorollary}{\ref{#1}$'$}%
+   \addtocounter{corollary}{-1}%
+   \begin{corollary}}
+  {\end{corollary}}
+  
+% Bracket around footnotes
+\renewcommand*{\thefootnote}{(\arabic{footnote})}
+
+
+% Left-right floor/ceil fns and brackets and norms
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand{\lr}[1]{\left #1 \right}
+\newcommand{\rndBrk}[1]{\left( #1 \right)}
+\newcommand{\sqBrk}[1]{\left[ #1 \right]}
+\newcommand{\curlyBrk}[1]{\left\lbrace #1 \right\rbrace}
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+\newcommand{\ip}[1]{\left\langle #1 \right\rangle}
+
+
+
+% Matrix notation
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\tensor}{\otimes}
+\DeclareMathOperator{\Id}{\mathds{1}}
+\DeclareMathOperator{\supp}{\text{supp}}
+\DeclareMathOperator{\im}{\text{im}}
+
+% Probability notation
+\DeclareMathOperator{\Prob}{\mathbb{P}}
+\DeclareMathOperator{\Expect}{\mathbb{E}}
+\newcommand{\ExpectOverProb}[2]{\mathbb{E}_{#2} \left[ #1 \right]}
+
+% stylistic notation
+\DeclareMathOperator{\cN}{\mathcal{N}}
+\DeclareMathOperator{\cM}{\mathcal{M}}

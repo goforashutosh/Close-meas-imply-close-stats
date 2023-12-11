@@ -1,0 +1,13 @@
+# ignore everything
+*
+
+# except
+!.gitignore
+!*.tex
+!*.bib
+!*.png
+!*.jpg
+!*.sty
+!*.bst
+!*.pdf
+

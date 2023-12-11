@@ -1,0 +1,128 @@
+% To use git latexdiff use
+% git latexdiff OLD NEW (commit hashes) --main paper.tex --bibtex --output paper_diff.pdf --ignore-latex-errors
+
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+
+\usepackage{import}
+\usepackage{authblk}						% for affiliations
+\usepackage{cite}
+\usepackage{array}								% for tables
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{amsthm}
+\usepackage{dsfont}							% for mathbb{1}
+\usepackage{verbatim}						% for multi line comments
+\usepackage{MnSymbol}						% for \rrangle
+\usepackage{mathrsfs}						% for curlier C
+\usepackage{mdframed}
+\usepackage{caption}
+% \usepackage{subcaption}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{float}
+\usepackage{placeins}
+
+% for clickable references
+\RequirePackage{doi}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true,    % Colours links instead of boxes
+  urlcolor     = blue,    % Colour for external hyperlinks
+  linkcolor    = blue,    % Colour of internal links
+  citecolor    = green      % Colour of citations
+}
+
+\DeclareCaptionType{Protocol}
+
+% Import style file
+\usepackage{latexdef}
+
+% comment flag
+% \newif\ifcomments
+% \commentsfalse
+
+% \newcommand{\fredcomment}[1]{\ifcomments\textcolor{red}{(Fred: #1)}}
+% \newcommand{\fred}[1]{\ifcomments\textcolor{red}{(Fred: #1)}}
+
+
+\title{Approximately equal measurements result in approximately equal statistics}
+\author{Ashutosh Marwah\footnote{email: ashutosh.marwah@outlook.com} \ and Fr\'ed\'eric Dupuis}
+\affil{\small{D\'epartement d'informatique et de recherche op\'erationnelle,\\ Universit\'e de Montr\'eal,\\ Montr\'eal QC, Canada}}
+
+\date{\today}							% Activate to display a given date or no date
+
+% use {...} to prevent inline formulae from breaking up
+% use sloppypar to prevent overfull boxes
+
+\newcommand{\charFn}[1]{\chi_{#1}}
+
+\begin{document}
+\maketitle
+
+\begin{lemma}
+    Let $\{F, \Id - F\}$ and $\{G, \Id - G\}$ be two binary POVMs over a register $X$ corresponding to the results $\{1, 0\}$ such that $\norm{F - G}_1 \leq \epsilon$. Suppose, that these are used to measure the $n$ registers $X_1^n$ of a state $\rho_{X_1^n}$. Let $N_F$ be the number of times $F$ is measured (number of 1 measurements) and similarly define $N_G$. Then, for $\delta > 0$ and some $t \in [n]$, we have 
+    \begin{align}
+        \Pr [N_G > t + n(\epsilon + \delta)] \leq \Pr [N_F > t] + (n+1)^{|X|^2}2^{- \frac{n \delta^2}{2\epsilon(1- \epsilon)}}.
+    \end{align}
+\end{lemma}
+
+The best way to prove something like this classically is to use coupling. Moreover, note that one needs some sort of independence assumption. For example, if we only have that for two distributions $P_{X_1^n}$ and $Q_{X_1^n}$
+\begin{align}
+    P_{X_i} \approx_\epsilon Q_{X_i} \text{ for all } i
+\end{align}
+then it is not necessary that $P(\sum_i X_i > t+ nf(\epsilon)) < Q(\sum_i X_i > t) + negl$. This can be seen by considering $P$ such that with half probability $X_1^n$ is the all 1s string, and otherwise it is the all 0 string. $Q$ can be considered to be the uniform distribution on $n$-bit strings. Then, 
+\begin{align}
+    P_{X_i} = Q_{X_i} = \text{uni}(\{0,1\}) \text{ for all } i
+\end{align}
+but $P(\sum_i X_i =n) = 1/2$ and $Q(\sum_i X_i > n(1/2 + \delta)) \rightarrow 0$.
+\begin{proof}
+    First consider the measurement $G$ to be of the form 
+    \begin{align}
+        G = F + P
+    \end{align}
+    where $P \geq 0$ and $\tr(P)\leq \epsilon$. Consider the measurement $\{I - F - P, F, P\}$ corresponding to the results $\{0, 1, 2\}$. This measurement allows us to simulate both $F$ and $G$ measurements together like a coupling. To simulate measurement by $F$, whenever the outcome $2$ is observed, output $0$. Otherwise, leave the outputs as is. Similarly to simulate the output of $G$, if $2$ is measured output $1$. Note that these simulations can be done as classical post-processing, so we can imagine that both $F$ and $G$ have been measured on the state at the same time. This allows us to argue about both measurements $F$ and $G$ through the same measurement.\\
+    
+    Measure the state $\rho_{X_1^n}$ $n$ times using this new measurement. Use the classical post-processing above to simulate both $F$ and $G$ measurements and define the random variables $N_F$ and $N_G$ using the outcomes. Let $Z_i$ denote if outcome $2$ is observed in the $i$th round. $Z_i$ denotes whether the outcome of the $F$ and $G$ measurements are equal in the $i$th round. Let $E$ denote the event that the number of rounds, where these results are unequal is at most $n(\epsilon+\delta)$. We have that 
+    \begin{align*}
+        \Pr_{\rho}[E^c] &= \Pr_{\rho}[\sum_i Z_i > n(\epsilon+\delta)] \\
+        & \leq (n+1)^{|X|^2} \sup_{\sigma} \Pr_{\sigma^{\otimes n}} [\sum_i Z_i > n(\epsilon+\delta)] \\
+        &\leq (n+1)^{|X|^2} 2^{- \frac{n \delta^2}{2\epsilon(1- \epsilon)}}
+    \end{align*}
+    where in the second line we have used the fact that we can WLOG let $\rho_{X_1^n}$ be a symmetric state and then we have used the de Finetti theorem. In the last line, we use the Chernoff bound. \\
+
+    This gives us
+    \begin{align}
+        \Pr_\rho[N_G > t + n(\epsilon+\delta)] &\leq \Pr_\rho[N_G > t + n(\epsilon+\delta) \wedge E] + \Pr_{\rho}[E^c] \\
+        &\leq \Pr_\rho[N_F > t ] + (n+1)^{|X|^2} 2^{- \frac{n \delta^2}{2\epsilon(1- \epsilon)}}
+        \label{eq:Ng_leq_Nf}
+    \end{align}
+    Note that because of our simulation procedure whenever $1$ is measured according to the $F$ measurements, $1$ is also measured according to the $G$ measurements. This implies that $N_F \leq N_G$ always. Specifically, that 
+    \begin{align}
+        \Pr[N_F > t'] \leq \Pr[N_G > t'] 
+        \label{eq:Nf_leq_Ng}
+    \end{align}
+    for all $t'$.\\
+
+    For general measurements, $F$ and $G$ as in the theorem, there exists positive and orthogonal operators $P$ and $Q$ such that  
+    \begin{align}
+        F - G = P - Q 
+    \end{align}
+    and $\tr(P+Q) \leq \epsilon$. Define, 
+    \begin{align}
+        W := F + Q = G + P.
+    \end{align}
+    We can simulate $F$ and $W$ together and also $G$ and $W$ together as above. This gives us that 
+    \begin{align*}
+        \Pr_\rho[N_G > t + n(\epsilon+\delta)] &\leq \Pr_\rho[N_W > t+ n(\epsilon+\delta)] \\
+        & \leq \Pr_\rho[N_F > t] + (n+1)^{|X|^2} 2^{- \frac{n \delta^2}{2\epsilon(1- \epsilon)}}
+    \end{align*}
+    where we have used the bounds corresponding to Eq. \ref{eq:Nf_leq_Ng} and \ref{eq:Ng_leq_Nf}.
+\end{proof}
+\end{document}  
